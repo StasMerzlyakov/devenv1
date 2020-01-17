@@ -67,10 +67,34 @@ chown -R redmine:redmine files log tmp public/plugin_assets
 chmod -R 755 files log tmp public/plugin_assets
 '
 
-echo "LoadModule passenger_module /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4/buildout/apache2/mod_passenger.so" | sudo tee -a /etc/apache2/apache2.conf
-
-
-
 # install Configure Apache
 
+echo "LoadModule passenger_module /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4/buildout/apache2/mod_passenger.so" > /etc/apache2/mods-available/passenger.load
+echo "<IfModule mod_passenger.c>
+    PassengerRoot /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4
+    PassengerDefaultRuby /usr/share/rvm/gems/ruby-2.6.5/wrappers/ruby
+</IfModule>" > /etc/apache2/mods-available/passenger.conf
+
+
+echo "
+Listen 3000
+<VirtualHost *:3000>
+    DocumentRoot /home/redmine/redmine/public
+    ServerName redmine.ztech
+    RailsEnv production
+    PassengerUser redmine
+    PassengerRoot /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4
+    PassengerDefaultRuby /usr/share/rvm/gems/ruby-2.6.5/wrappers/ruby
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combine
+    <Directory /home/redmine/redmine/public>
+      Allow from all
+      Options -MultiViews
+      Require all granted
+    </Directory>
+</VirtualHost>
+" > /etc/apache2/sites-available/redmine.conf
+a2enmod passenger
+a2ensite redmine
+systemctl restart apache2
 
