@@ -14,7 +14,7 @@ ADM_PASSWORD=ldappass
 # /O=: Organization (Sparkling Network)
 # /OU=: Organizational Unit, Department (IT Department, Sales)
 # /CN=: Common Name, for a website certificate this is the FQDN. (ssl.raymii.org)
-SUBJECT="/C=NL/ST=Zuid Holland/L=Rotterdam/O=Sparkling Network/OU=IT Department/CN=ssl.raymii.org"
+#SUBJECT="/C=NL/ST=Zuid Holland/L=Rotterdam/O=Sparkling Network/OU=IT Department/CN=ssl.raymii.org"
 
 # 
 DATE=`date +%Y_%d_%m`
