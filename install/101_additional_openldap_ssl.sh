@@ -16,9 +16,15 @@ ADM_PASSWORD=ldappass
 # /CN=: Common Name, for a website certificate this is the FQDN. (ssl.raymii.org)
 SUBJECT="/C=NL/ST=Zuid Holland/L=Rotterdam/O=Sparkling Network/OU=IT Department/CN=ssl.raymii.org"
 
+ 
+DATE=`date +%Y_%d_%m`
+CERT_NAME="${DATE}.cert"
+KEY_NAME="${DATE}.key"
+DAYS=365
+
 openssl req -new -x509 -nodes -out /etc/openldap/certs/${CERT_NAME} \
 -keyout /etc/openldap/certs/${KEY_NAME} \
--days 365 -subj "${SUBJECT}"
+-days ${DAYS} -subj "${SUBJECT}"
 
 chown -R ldap:ldap /etc/openldap/certs
 
