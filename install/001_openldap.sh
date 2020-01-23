@@ -99,7 +99,6 @@ dn: ou=Group,${DOMAIN}
 objectClass: organizationalUnit
 ou: Group" > ./base.ldif
 
-ldapadd -x -W -D "cn=${ADM_NAME},${DOMAIN}" -f base.ldif
-
+ldapadd -x -w ${ADM_PASSWORD} -D "cn=${ADM_NAME},${DOMAIN}" -f base.ldif
 
 rm *.ldif
