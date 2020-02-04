@@ -2,12 +2,22 @@
 
 # ! sudo required
 # domain: unit.organization.ru
-UNIT=unit
-DOMAIN="dc=${UNIT},dc=organization,dc=ru"
-DATE=`date +%Y_%d_%m`
+DOMAIN="dc=unit,dc=organization,dc=ru"
+
 ADM_NAME=ldapadm
 ADM_PASSWORD=ldappass
 
+## ldap certificate subject
+# /C=NL: 2 letter ISO country code (Netherlands)
+# /ST=: State, Zuid Holland (South holland)
+# /L=: Location, city (Rotterdam)
+# /O=: Organization (Sparkling Network)
+# /OU=: Organizational Unit, Department (IT Department, Sales)
+# /CN=: Common Name, for a website certificate this is the FQDN. (ssl.raymii.org)
+SUBJECT="/C=NL/ST=Zuid Holland/L=Rotterdam/O=Sparkling Network/OU=IT Department/CN=ssl.raymii.org"
+
+# 
+DATE=`date +%Y_%d_%m`
 CERT_NAME="${DATE}.cert"
 KEY_NAME="${DATE}.key"
 
@@ -49,13 +59,10 @@ olcAccess: {0}to * by dn.base=\"gidNumber=0+uidNumber=0,cn=peercred,cn=external,
 
 ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif
 
-
-
-# TODO - parameters !!
- openssl req -new -x509 -nodes -out 
+openssl req -new -x509 -nodes -out 
  /etc/openldap/certs/${CERT_NAME} \
 -keyout /etc/openldap/certs/${KEY_NAME} \
--days 365
+-days 365 -subj ${SUBJECT}
 
 chown -R ldap:ldap /etc/openldap/certs
 
@@ -81,24 +88,25 @@ ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/nis.ldif
 ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
 
 
-echo "dn: ${DOMAIN}
-dc: ${UNIT}
-objectClass: top
-objectClass: domain
-
-dn: cn=${ADM_NAME},${DOMAIN}
-objectClass: organizationalRole
-cn: ${ADM_NAME}
-description: LDAP Manager
-
-dn: ou=People,${DOMAIN}
-objectClass: organizationalUnit
-ou: People
-
-dn: ou=Group,${DOMAIN}
-objectClass: organizationalUnit
-ou: Group" > ./base.ldif
-
-ldapadd -x -w ${ADM_PASSWORD} -D "cn=${ADM_NAME},${DOMAIN}" -f base.ldif
-
+## Primer
+#echo "dn: ${DOMAIN}
+#dc: ${UNIT}
+#objectClass: top
+#objectClass: domain
+#
+#dn: cn=${ADM_NAME},${DOMAIN}
+#objectClass: organizationalRole
+#cn: ${ADM_NAME}
+#description: LDAP Manager
+#
+#dn: ou=People,${DOMAIN}
+#objectClass: organizationalUnit
+#ou: People
+#
+#dn: ou=Group,${DOMAIN}
+#objectClass: organizationalUnit
+#ou: Group" > ./base.ldif
+#
+#ldapadd -x -w ${ADM_PASSWORD} -D "cn=${ADM_NAME},${DOMAIN}" -f base.ldif
+#
 rm *.ldif
