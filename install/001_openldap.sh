@@ -59,25 +59,26 @@ olcAccess: {0}to * by dn.base=\"gidNumber=0+uidNumber=0,cn=peercred,cn=external,
 
 ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif
 
-openssl req -new -x509 -nodes -out /etc/openldap/certs/${CERT_NAME} \
--keyout /etc/openldap/certs/${KEY_NAME} \
--days 365 -subj "${SUBJECT}"
-
-chown -R ldap:ldap /etc/openldap/certs
-
-echo "dn: cn=config
-changetype: modify
-replace: olcTLSCertificateKeyFile
-olcTLSCertificateKeyFile: /etc/openldap/certs/${KEY_NAME}
-
-
-dn: cn=config
-changetype: modify
-replace: olcTLSCertificateFile
-olcTLSCertificateFile: /etc/openldap/certs/${CERT_NAME}" > certs.ldif
-
-ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
-
+# TODO support SSL in future
+#openssl req -new -x509 -nodes -out /etc/openldap/certs/${CERT_NAME} \
+#-keyout /etc/openldap/certs/${KEY_NAME} \
+#-days 365 -subj "${SUBJECT}"
+#
+#chown -R ldap:ldap /etc/openldap/certs
+#
+#echo "dn: cn=config
+#changetype: modify
+#replace: olcTLSCertificateKeyFile
+#olcTLSCertificateKeyFile: /etc/openldap/certs/${KEY_NAME}
+#
+#
+#dn: cn=config
+#changetype: modify
+#replace: olcTLSCertificateFile
+#olcTLSCertificateFile: /etc/openldap/certs/${CERT_NAME}" > certs.ldif
+#
+#ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
+#
 
 cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
 chown -R ldap:ldap /var/lib/ldap
