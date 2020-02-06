@@ -1,5 +1,10 @@
 #!/bin/bash
 
+[ ! -f ./variables ] && echo "file ./variables not exists" && exit 1
+
+echo "???"
+source ./variables
+
 [ -z $DOMAIN ] && echo "DOMAIN not set" && exit 1
 [ -z $ADM_NAME ] && echo "DOMAIN not set" && exit 1
 [ -z $ADM_PASSWORD ] && echo "DOMAIN not set" && exit 1
