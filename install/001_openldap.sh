@@ -1,12 +1,8 @@
 #!/bin/bash
 
-# ! sudo required
-# domain: unit.organization.ru
-DOMAIN="dc=unit,dc=organization,dc=ru"
-
-# HINT!!! LDAP ADM_USER DN will be cn=${ADM_NAME},${DOMAIN}
-ADM_NAME=ldapadm
-ADM_PASSWORD=ldappass
+[ -z $DOMAIN ] && echo "DOMAIN not set" && exit 1
+[ -z $ADM_NAME ] && echo "DOMAIN not set" && exit 1
+[ -z $ADM_PASSWORD ] && echo "DOMAIN not set" && exit 1
 
 yum -y install openldap openldap-servers openldap-servers-sql openldap-devel compat-openldap openldap-clients
 #
@@ -45,28 +41,6 @@ replace: olcAccess
 olcAccess: {0}to * by dn.base=\"gidNumber=0+uidNumber=0,cn=peercred,cn=external, cn=auth\" read by dn.base=\"cn=${ADM_NAME},${DOMAIN}\" read by * none" > monitor.ldif
 
 ldapmodify -Y EXTERNAL  -H ldapi:/// -f monitor.ldif
-
-# TODO support SSL in future
-#openssl req -new -x509 -nodes -out /etc/openldap/certs/${CERT_NAME} \
-#-keyout /etc/openldap/certs/${KEY_NAME} \
-#-days 365 -subj "${SUBJECT}"
-#
-#chown -R ldap:ldap /etc/openldap/certs
-#
-#echo "dn: cn=config
-#changetype: modify
-#replace: olcTLSCertificateKeyFile
-#olcTLSCertificateKeyFile: /etc/openldap/certs/${KEY_NAME}
-#
-#
-#dn: cn=config
-#changetype: modify
-#replace: olcTLSCertificateFile
-#olcTLSCertificateFile: /etc/openldap/certs/${CERT_NAME}" > certs.ldif
-#
-#ldapmodify -Y EXTERNAL  -H ldapi:/// -f certs.ldif
-#
-
 cp /usr/share/openldap-servers/DB_CONFIG.example /var/lib/ldap/DB_CONFIG
 chown -R ldap:ldap /var/lib/ldap
 
@@ -74,26 +48,4 @@ ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/cosine.ldif
 ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/nis.ldif
 ldapadd -Y EXTERNAL  -H ldapi:/// -f /etc/openldap/schema/inetorgperson.ldif
 
-
-## Primer
-#echo "dn: ${DOMAIN}
-#dc: ${UNIT}
-#objectClass: top
-#objectClass: domain
-#
-#dn: cn=${ADM_NAME},${DOMAIN}
-#objectClass: organizationalRole
-#cn: ${ADM_NAME}
-#description: LDAP Manager
-#
-#dn: ou=People,${DOMAIN}
-#objectClass: organizationalUnit
-#ou: People
-#
-#dn: ou=Group,${DOMAIN}
-#objectClass: organizationalUnit
-#ou: Group" > ./base.ldif
-#
-#ldapadd -x -w ${ADM_PASSWORD} -D "cn=${ADM_NAME},${DOMAIN}" -f base.ldif
-#
 rm *.ldif

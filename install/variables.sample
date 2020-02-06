@@ -1,0 +1,4 @@
+DOMAIN="dc=unit,dc=organization,dc=ru"
+ADM_NAME=ldapadm
+ADM_PASSWORD=ldappass 
+
