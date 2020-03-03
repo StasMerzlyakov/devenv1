@@ -6,12 +6,7 @@
 source ./variables
 [ -z $REDMINE_PASSWORD ] && echo "REDMINE_PASSWORD not set" && exit 1
 
-# install apache2
-#yum -y install apache2 apache2-dev libcurl4-openssl-dev
-#yum -y install imagemagick libmagickwand-dev git build-essential automake libgmp-dev
-yum -y install httpd
-
-# install postgresql
+## install postgresql
 yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
 
 yum -y install epel-release yum-utils
@@ -25,21 +20,22 @@ su - postgres -c 'echo "ALTER USER redmine WITH ENCRYPTED password '\''$REDMINE_
 su - postgres -c 'echo "CREATE DATABASE redmine WITH ENCODING='\''UTF8'\'' OWNER=redmine;" | psql'
 yum install -y libpqxx-dev protobuf-compiler
 
+## install httpd
+yum -y install httpd gcc-c++ patch readline readline-devel zlib zlib-devel ibffi-devel openssl-devel make bzip2 autoconf automake libtool bison curl-devel openssl-devel httpd-devel apr-devel apr-util-devel postgresql12-devel
 
-exit
+## ruby
+curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -
+curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -
+curl -L get.rvm.io | bash -s stable
 
-# ruby
-apt-add-repository -y ppa:rael-gc/rvm
-apt update
-apt -y install rvm
-su -c 'echo "source /etc/profile.d/rvm.sh" | tee -a /etc/profile'
-su -c 'source /etc/profile.d/rvm.sh && rvm install 2.6.5 && rvm use 2.6.5 --default && gem install bundler'
-
+su -c 'source /etc/profile.d/rvm.sh && rvm reload && rvm requirements run && rvm install 2.6.5 && rvm use 2.6.5 --default && gem install bundler'
 su -c 'source /etc/profile.d/rvm.sh && gem install passenger'
 su -c 'source /etc/profile.d/rvm.sh && passenger-install-apache2-module -a'
 
+
 ## install redmine
-#adduser --disabled-password --gecos "Redmine User" redmine
+adduser -c "Redmine User" redmine
+
 su - redmine -c 'cd ~
 wget https://www.redmine.org/releases/redmine-4.1.0.tar.gz
 tar -xf redmine-*.tar.gz
@@ -56,7 +52,7 @@ production:
   username: redmine
   password: \"redmine\"
 " > config/database.yml
-bundle config build.pg --with-pg-config=/usr/bin/pg_config
+bundle config build.pg --with-pg-config=/usr/pgsql-12/bin/pg_config
 bundle install --path vendor/bundle --without development test
 bundle exec rake generate_secret_token
 RAILS_ENV=production bundle exec rake db:migrate
@@ -66,8 +62,8 @@ mkdir -p tmp tmp/pdf public/plugin_assets
 chown -R redmine:redmine files log tmp public/plugin_assets
 chmod -R 755 files log tmp public/plugin_assets
 '
-
-# install Configure Apache
+exit
+# install Config-ure Apache
 
 echo "LoadModule passenger_module /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4/buildout/apache2/mod_passenger.so" > /etc/apache2/mods-available/passenger.load
 echo "<IfModule mod_passenger.c>
