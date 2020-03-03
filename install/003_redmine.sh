@@ -5,6 +5,8 @@
 
 source ./variables
 [ -z $REDMINE_PASSWORD ] && echo "REDMINE_PASSWORD not set" && exit 1
+[ -z $WEB_DOMAIN ] && echo "WEB_DOMAIN not set" && exit 1
+
 
 ## install postgresql
 yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
@@ -27,7 +29,6 @@ cp /var/lib/pgsql/12/data/pg_hba.conf /var/lib/pgsql/12/data/pg_hba.conf.back
 yum install -y patch
 patch /var/lib/pgsql/12/data/pg_hba.conf pg_hba.conf.patch
 systemctl restart postgresql-12.service
-exit
 
 yum install -y libpqxx-dev protobuf-compiler
 
@@ -46,12 +47,15 @@ su -c 'source /etc/profile.d/rvm.sh && passenger-install-apache2-module -a'
 
 ## install redmine
 adduser -c "Redmine User" redmine
-
-su - redmine -c 'cd ~
+mkdir /opt/redmine
+chmod -R 755 /opt/redmine
+chown -R redmine:redmine /opt/redmine
+su - redmine << EOF
+cd /opt/redmine
 wget https://www.redmine.org/releases/redmine-4.1.0.tar.gz
 tar -xf redmine-*.tar.gz
-mv redmine-*/ redmine/
-cd redmine
+mv redmine-*/* ./
+rm -rf redmine-*
 cp config/configuration.yml.example config/configuration.yml
 cp config/database.yml.example config/database.yml
 
@@ -61,7 +65,7 @@ production:
   database: redmine
   host: localhost
   username: redmine
-  password: \"redmine\"
+  password: \"${REDMINE_PASSWORD}\"
 " > config/database.yml
 bundle config build.pg --with-pg-config=/usr/pgsql-12/bin/pg_config
 bundle install --path vendor/bundle --without development test
@@ -72,36 +76,32 @@ RAILS_ENV=production REDMINE_LANG=ru  bundle exec rake redmine:load_default_data
 mkdir -p tmp tmp/pdf public/plugin_assets
 chown -R redmine:redmine files log tmp public/plugin_assets
 chmod -R 755 files log tmp public/plugin_assets
-'
-exit
+EOF
+
 # install Config-ure Apache
 
-echo "LoadModule passenger_module /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4/buildout/apache2/mod_passenger.so" > /etc/apache2/mods-available/passenger.load
-echo "<IfModule mod_passenger.c>
-    PassengerRoot /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4
-    PassengerDefaultRuby /usr/share/rvm/gems/ruby-2.6.5/wrappers/ruby
-</IfModule>" > /etc/apache2/mods-available/passenger.conf
 
+echo "LoadModule passenger_module /usr/local/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4/buildout/apache2/mod_passenger.so
+<IfModule mod_passenger.c>
+   PassengerRoot /usr/local/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4
+   PassengerDefaultRuby /usr/local/rvm/gems/ruby-2.6.5/wrappers/ruby
+ </IfModule>" > /etc/httpd/conf.modules.d/02-passenger.conf
 
-echo "
-Listen 3000
+echo "Listen 3000
 <VirtualHost *:3000>
-    DocumentRoot /home/redmine/redmine/public
-    ServerName redmine.ztech
+    DocumentRoot /opt/redmine/public
+    ServerName ${WEB_DOMAIN}
     RailsEnv production
     PassengerUser redmine
-    PassengerRoot /usr/share/rvm/gems/ruby-2.6.5/gems/passenger-6.0.4
-    PassengerDefaultRuby /usr/share/rvm/gems/ruby-2.6.5/wrappers/ruby
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combine
-    <Directory /home/redmine/redmine/public>
+    <Directory /opt/redmine/public>
       Allow from all
       Options -MultiViews
       Require all granted
     </Directory>
 </VirtualHost>
-" > /etc/apache2/sites-available/redmine.conf
-a2enmod passenger
-a2ensite redmine
-systemctl restart apache2
+" > /etc/httpd/conf.d/redmine.conf
+#a2enmod passenger
+#a2ensite redmine
+systemctl restart httpd
+systemctl enable httpd
 
