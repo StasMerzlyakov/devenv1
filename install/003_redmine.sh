@@ -1,23 +1,32 @@
 #!/bin/bash
 
 ## !!! sudo required
+[ ! -f ./variables ] && echo "file ./variables not exists" && exit 1
+
+source ./variables
+[ -z $REDMINE_PASSWORD ] && echo "REDMINE_PASSWORD not set" && exit 1
 
 # install apache2
-apt -y install apache2 apache2-dev libcurl4-openssl-dev
-apt -y install imagemagick libmagickwand-dev git build-essential automake libgmp-dev
+#yum -y install apache2 apache2-dev libcurl4-openssl-dev
+#yum -y install imagemagick libmagickwand-dev git build-essential automake libgmp-dev
+yum -y install httpd
 
 # install postgresql
-echo "deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main" | tee /etc/apt/sources.list.d/pgdg.list
-wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-apt update
-apt -y install postgresql
-systemctl start postgresql
-systemctl enable postgresql
+yum -y install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+yum -y install epel-release yum-utils
+yum-config-manager --enable pgdg12
+yum install -y postgresql12-server postgresql12
+/usr/pgsql-12/bin/postgresql-12-setup initdb
+systemctl enable --now postgresql-12
 
 su - postgres -c 'createuser redmine'
-su - postgres -c 'echo "ALTER USER redmine WITH ENCRYPTED password '\''redmine'\'';" | psql'
+su - postgres -c 'echo "ALTER USER redmine WITH ENCRYPTED password '\''$REDMINE_PASSWORD'\'';" | psql'
 su - postgres -c 'echo "CREATE DATABASE redmine WITH ENCODING='\''UTF8'\'' OWNER=redmine;" | psql'
-apt -y install libpqxx-dev protobuf-compiler
+yum install -y libpqxx-dev protobuf-compiler
+
+
+exit
 
 # ruby
 apt-add-repository -y ppa:rael-gc/rvm
