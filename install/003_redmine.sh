@@ -105,3 +105,8 @@ echo "Listen 3000
 systemctl restart httpd
 systemctl enable httpd
 
+#disable selinux
+patch /etc/selinux/config  selinux_config.patch
+
+#reboot
+reboot
