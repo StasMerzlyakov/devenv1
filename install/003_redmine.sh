@@ -16,7 +16,10 @@ yum install -y postgresql12-server postgresql12
 systemctl enable --now postgresql-12
 
 su - postgres -c 'createuser redmine'
-su - postgres -c 'echo "ALTER USER redmine WITH ENCRYPTED password '\''$REDMINE_PASSWORD'\'';" | psql'
+sudo su - postgres << EOF
+   echo "ALTER USER redmine WITH ENCRYPTED password '"$REDMINE_PASSWORD"';" | psql
+EOF
+
 su - postgres -c 'echo "CREATE DATABASE redmine WITH ENCODING='\''UTF8'\'' OWNER=redmine;" | psql'
 yum install -y libpqxx-dev protobuf-compiler
 
