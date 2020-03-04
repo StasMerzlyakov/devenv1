@@ -26,7 +26,6 @@ su - postgres -c 'echo "CREATE DATABASE redmine WITH ENCODING='\''UTF8'\'' OWNER
 
 
 cp /var/lib/pgsql/12/data/pg_hba.conf /var/lib/pgsql/12/data/pg_hba.conf.back
-yum install -y patch
 patch /var/lib/pgsql/12/data/pg_hba.conf pg_hba.conf.patch
 systemctl restart postgresql-12.service
 
@@ -105,8 +104,3 @@ echo "Listen 3000
 systemctl restart httpd
 systemctl enable httpd
 
-#disable selinux
-patch /etc/selinux/config  selinux_config.patch
-
-#reboot
-reboot
