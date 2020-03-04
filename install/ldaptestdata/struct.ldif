@@ -1,0 +1,98 @@
+dn: dc=udmgazmyassbit,dc=ru
+changetype: add
+dc: udmgazmyassbit
+objectClass: dcObject
+objectClass: organization
+description: Компания ООО "УдмуртГазМясСбыт" 
+o: УдмуртГазМясСбыт, ООО
+
+dn: ou=people, dc=udmgazmyassbit,dc=ru
+changetype: add
+ou: people
+description: Сотрудники организации
+objectclass: organizationalunit
+
+dn: uid=ipmaksimov,ou=people,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: inetOrgPerson
+cn: Максимов Иван Петрович
+sn: Максимов
+uid: ipmaksimov
+# можно через {SSHA}
+userpassword: 123456   
+homephone: 555-111-2222
+mail: ip.maksimov@udmgazmyassbit.ru
+mail: ipm@gmail.com
+description: Самый главный
+# Структурные подразделения организации
+ou: izhevsk-common
+ou: management
+
+dn: uid=rnivanov,ou=people,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: inetOrgPerson
+cn: Иванов Руслан Нигматулович
+sn: Иванов
+uid: rnivanov
+# можно через {SSHA}
+userpassword: 123456   
+homephone: 555-111-2222
+mail: rn.ivanov@udmgazmyassbit.ru
+mail: ruslan.ivanov@yandex.ru
+description: Начальник отдела технического обеспечения
+# Структурные подразделения организации
+ou: izhevsk-common
+ou: admin
+
+dn: ou=groups,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: organizationalunit
+ou: groups
+description: Группы пользователей
+
+# создание записи группы itpeople
+dn: cn=itpeople,ou=groups,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: groupofnames
+cn: itpeople
+description: IT security group
+# добавление членов группы, подразумевается,
+# что все они существуют и находятся в ветке people
+# member: uid=...
+# member: uid=...
+member: uid=rnivanov,ou=people,dc=udmgazmyassbit,dc=ru
+
+# создание записи группы manager
+dn: cn=manager,ou=groups,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: groupofnames
+cn: manager
+description: Manager security group
+# добавление членов группы, подразумевается,
+# что все они существуют и находятся в ветке people
+# member: uid=...
+# member: uid=...
+member: uid=ipmaksimov,ou=people,dc=udmgazmyassbit,dc=ru
+
+
+dn: ou=product,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: organizationalunit
+ou: product
+description: Продукция и товары
+
+
+dn: cn=horns,ou=product,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: device
+cn: horns
+description: Рога
+
+dn: cn=hoofs,ou=product,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: device
+cn: hoofs
+description: Копыта
+
+
+

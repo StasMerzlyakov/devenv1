@@ -1,0 +1,17 @@
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcSuffix
+olcSuffix: dc=udmgazmyassbit,dc=ru
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootDN
+# Суффикс должен соответствовать суффиксу БД
+olcRootDN: cn=ldapadm,dc=udmgazmyassbit,dc=ru
+
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+replace: olcRootPW
+# Формируется на базе ADM_PASSWORD
+olcRootPW: {SSHA}XsTNDcNtMfBy8BvTJYoXXtNuQV21w9+/
+
