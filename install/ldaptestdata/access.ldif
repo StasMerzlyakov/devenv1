@@ -1,0 +1,14 @@
+# Правило olcAccess: to * только в конце
+# Никаких пустых строк внутри команды
+dn: olcDatabase={2}hdb,cn=config
+changetype: modify
+add: olcAccess
+# Доступ к атрибуту userpassword только для группы админов и для владельца
+olcAccess: to attrs=userpassword by self write by group.exact="cn=itpeople,ou=groups,dc=udmgazmyassbit,dc=ru" write by anonymous auth by * none
+# Редактирование каталога product - только для пользователей группы manager
+olcAccess: to dn.subtree="ou=product,dc=udmgazmyassbit,dc=ru" by group.exact="cn=manager,ou=groups,dc=udmgazmyassbit,dc=ru" write
+# Редактирование каталога group - только для пользователей группы itpeople
+olcAccess: to dn.subtree="ou=groups,dc=udmgazmyassbit,dc=ru" by group.exact="cn=itpeople,ou=groups,dc=udmgazmyassbit,dc=ru" write
+# Доступ на чтение для только для авторизованных пользователей.
+olcAccess: to * by self write by users read by anonymous auth
+

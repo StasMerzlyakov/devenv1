@@ -1,0 +1,29 @@
+dn: ou=system, dc=udmgazmyassbit,dc=ru
+changetype: add
+ou: system
+description: Внутренние системы
+objectclass: organizationalunit
+
+dn: uid=redmine,ou=system,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: inetOrgPerson
+cn: redmine
+sn: redmine
+uid: redmine
+# можно через {SSHA}
+userPassword: 123456   
+homephone: 555-111-2222
+mail: ip.maksimov@udmgazmyassbit.ru
+mail: ipm@gmail.com
+description: Самый главный
+# Структурные подразделения организации
+ou: izhevsk-common
+ou: management
+
+# создание записи группы itpeople
+dn: cn=intsys,ou=system,dc=udmgazmyassbit,dc=ru
+changetype: add
+objectclass: groupofnames
+cn: intsys
+member: uid=redmine,ou=system,dc=udmgazmyassbit,dc=ru
+

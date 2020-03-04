@@ -1,4 +1,5 @@
 DOMAIN="dc=unit,dc=organization,dc=ru"
+WEB_DOMAIN="unit.organization.ru"
 ADM_NAME=ldapadm
 ADM_PASSWORD=ldappass 
-
+REDMINE_PASSWORD=redmine

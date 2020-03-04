@@ -1,0 +1,4 @@
+84c84
+< host    all             all             ::1/128                 ident
+---
+> host    all             all             ::1/128                 md5
