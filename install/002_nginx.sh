@@ -4,8 +4,6 @@
 
 source ./variables
 
-yum -y install 
-
 echo "[nginx]
 name=nginx repo
 baseurl=http://nginx.org/packages/mainline/centos/7/$basearch/
