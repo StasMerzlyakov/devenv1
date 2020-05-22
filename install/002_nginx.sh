@@ -14,7 +14,8 @@ enabled=1" > /etc/yum.repos.d/nginx.repo
 yum -y install nginx
 systemctl enable nginx
 
-# sample
+## Sample
+
 # echo "upstream authproxy {
 #     server localhost:8080;
 # }
@@ -32,8 +33,8 @@ systemctl enable nginx
 # systemctl start nginx
 # 
 # 
-# # fix SELinux
+## fix SELinux
 # setsebool -P httpd_can_network_connect 1
 # 
-# 
-# 
+
+
