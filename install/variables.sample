@@ -3,3 +3,7 @@ WEB_DOMAIN="unit.organization.ru"
 ADM_NAME=ldapadm
 ADM_PASSWORD=ldappass 
 REDMINE_PASSWORD=redmine
+GITLAB_HOSTNAME=gitlab
+GITLAB_DN=gitlab.organization.ru
+GITLAB_IP=127.0.0.1
+

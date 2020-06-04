@@ -13,6 +13,12 @@
 #docker pull centos:centos7
 #
 
+# TODO 
+# Let's Encrypt SSL certificate
+# 
+
+# firewall
+
 #disable selinux
 yum install -y patch
 patch /etc/selinux/config  selinux_config.patch
