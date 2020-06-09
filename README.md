@@ -11,4 +11,5 @@ Required Docker CE
 - [OpenSSL Generate CSR non-interactive](https://raymii.org/s/snippets/OpenSSL_generate_CSR_non-interactive.html)
 - [How to Install Ruby on CentOS/RHEL 7/6](http://tecadmin.net/install-ruby-latest-stable-centos/)
 - [How to Install GitLab Community Edition (CE) 11.x on CentOS 7](https://www.vultr.com/docs/how-to-install-gitlab-community-edition-ce-11-x-on-centos-7)
+- [Установка GitLab CE на Centos 7](https://itdraft.ru/2019/08/22/ustanovka-gitlab-ce-na-centos-7/)
 

@@ -30,21 +30,24 @@ yum -y update
 
 yum install -y curl policycoreutils-python openssh-server openssh-clients
 
-## postfix install TODO
-# yum install -y postfix
-# systemctl enable postfix.service
-# systemctl start postfix.service
-# firewall-cmd --permanent --add-service=smtp
-# firewall-cmd --permanent --add-service=pop3
-# firewall-cmd --permanent --add-service=imap
-# firewall-cmd --permanent --add-service=smtps
-# firewall-cmd --permanent --add-service=pop3s
-# firewall-cmd --permanent --add-service=imaps
-# firewall-cmd --reload
+## postfix install TODO (for send mail)
+yum install -y postfix
+systemctl enable postfix.service
+systemctl start postfix.service
+firewall-cmd --permanent --add-service=smtp
+firewall-cmd --permanent --add-service=pop3
+firewall-cmd --permanent --add-service=imap
+firewall-cmd --permanent --add-service=smtps
+firewall-cmd --permanent --add-service=pop3s
+firewall-cmd --permanent --add-service=imaps
+firewall-cmd --permanent --add-service=http
+firewall-cmd --permanent --add-service=https
+firewall-cmd --reload
 
-cd curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | bash
+
+curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.rpm.sh | bash
 
 EXTERNAL_URL="${GITLAB_DN}" yum install -y gitlab-ce
 
-
-
+gitlab-ctl reconfigure
+gitlab-ctl start

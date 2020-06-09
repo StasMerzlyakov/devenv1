@@ -6,4 +6,12 @@ REDMINE_PASSWORD=redmine
 GITLAB_HOSTNAME=gitlab
 GITLAB_DN=gitlab.organization.ru
 GITLAB_IP=127.0.0.1
-
+GITLAB_EMAIL_FROM=admin@organization.ru
+GITLAB_EMAIL_DISPLAY_NAME=Admin
+GITLAB_EMAIL_REPLY_TO=admin@organization.ru
+SMTP_ADDRESS=smtp.organization.ru
+SMTP_USER_NAME=admin
+SMTP_PASSWORD=password
+SMTP_DOMAIN=organization.ru
+GITLAB_EMAIL_FROM=admin@organization.ru
+SMTP_AUTHENTIFICATION=login
