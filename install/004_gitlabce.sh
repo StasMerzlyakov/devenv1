@@ -49,5 +49,29 @@ curl -sS https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/scrip
 
 EXTERNAL_URL="${GITLAB_DN}" yum install -y gitlab-ce
 
+# gitlab ce configuration
+# TODO
+# gitlab_rails['gitlab_email_enabled'] = true
+# gitlab_rails['gitlab_email_from'] = 'admin@itdraft.ru'
+# gitlab_rails['gitlab_email_display_name'] = 'Admin'
+# gitlab_rails['gitlab_email_reply_to'] = 'admin@itdraft.ru'
+# gitlab_rails['smtp_enable'] = true
+# gitlab_rails['smtp_address'] = "smtp.itdraft.ru"
+# gitlab_rails['smtp_port'] = 465
+# gitlab_rails['smtp_user_name'] = "admin"
+# gitlab_rails['smtp_password'] = "%password%"
+# gitlab_rails['smtp_domain'] = "itdraft.ru"
+# gitlab_rails['gitlab_email_from'] = 'admin@itdraft.ru'
+# gitlab_rails['smtp_authentication'] = "login"
+# gitlab_rails['smtp_enable_starttls_auto'] = true
+# gitlab_rails['smtp_tls'] = false
+# gitlab_rails['smtp_openssl_verify_mode'] = 'peer'
+#
+
 gitlab-ctl reconfigure
 gitlab-ctl start
+
+
+
+
+
